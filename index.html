@@ -1,16 +1,23 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0;url=demo/" />
-    <title>image-carousel</title>
+
+    <title>image-carousel demo</title>
+
+    <link rel="import" href="src/image-carousel-app.html">
+
+    
+    <style>
+    </style>
   </head>
   <body>
-    <!--
-        ELEMENT API DOCUMENTATION SUPPORT COMING SOON
-        Visit demo/index.html to see live examples of your element running.
-        This page will automatically redirect you there when run in the browser
-        with `polymer serve`.
-      -->
+    <image-carousel-app images='[
+                "https://app-layout-assets.appspot.com/assets/bg1.jpg",
+                "https://app-layout-assets.appspot.com/assets/bg2.jpg",
+                "https://app-layout-assets.appspot.com/assets/bg3.jpg",
+                "https://app-layout-assets.appspot.com/assets/bg4.jpg"
+              ]'>
+    </image-carousel-app>
   </body>
 </html>

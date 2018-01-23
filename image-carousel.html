@@ -1,9 +1,9 @@
-<link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../polymer/lib/mixins/gesture-event-listeners.html">
-<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="/bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="/bower_components/polymer/lib/elements/dom-repeat.html">
 
 <!--
   `image-carousel` as the name suggests is a carousel element.
@@ -48,7 +48,7 @@ this.$['image-carousel'].addEventListener('image-carousel-changed', () => {
   `--right-navigation-icon-mixin` | Mixin applied to right navigation icon | {}
   `--dots-container-mixin` | Mixin applied to dots container | {}
   `--dots-border-color` | border color of dots | `rgba(119, 119, 119, 1)`
-  `--dots-mimxin` | Mixin applied to dots | {}
+  `--dots-mixin` | Mixin applied to dots | {}
   `--dots-checked-mixin` | Mixin applied to checked dot | {}
 
 
@@ -147,7 +147,7 @@ this.$['image-carousel'].addEventListener('image-carousel-changed', () => {
             -o-appearance: none;
             appearance: none;
             background-color: transparent;
-            @apply --dots-mimxin;
+            @apply --dots-mixin;
           }
 
         </style>
@@ -175,6 +175,10 @@ this.$['image-carousel'].addEventListener('image-carousel-changed', () => {
       static get is() { return 'image-carousel'; }
       static get properties() {
         return {
+          name: {
+            type: String,
+            value: 'image-carousel'
+          },
           /**
            * Boolean value to decide if images should change automatically.
            * Navigation buttons will always be hidden if this is true.
@@ -281,7 +285,6 @@ this.$['image-carousel'].addEventListener('image-carousel-changed', () => {
           this.setAttribute('role', 'region');
           this.setAttribute('tabindex', '0');
           this.getAttribute('aria-label') || this.getAttribute('aria-labelledby') ? null : this.setAttribute('aria-label', 'image-carousel');
-
           // adding event listeners to control autscroll feature
           if(this.autoscroll){
             let idx=0
@@ -334,7 +337,6 @@ this.$['image-carousel'].addEventListener('image-carousel-changed', () => {
        */
        _changeDotSelection() {
         this._dotClicked({model:{index: this.currentSelectedItem}});
-
         let event  = new CustomEvent("image-carousel-changed" ,{});
         this.dispatchEvent(event);
       }
@@ -355,10 +357,23 @@ this.$['image-carousel'].addEventListener('image-carousel-changed', () => {
        * @param {MouseEvent} event
        */
        _changeAttrAndProps(e) {
-        let elem = this.shadowRoot.getElementById(`dot${this.currentSelectedItem}`);
+        // WRM - can't find a better solution at the moment
+        if (this._numberOfImages === 0) {
+            this.computeNumberOfImages();
+        }
+
+        var elem = this.shadowRoot.getElementById(`dot${this.currentSelectedItem}`);
         if(elem) {
           elem.checked = false;
           this._setCurrentSelectedItem(e.model.index);
+          let event  = new CustomEvent("image-carousel-selection-changed" , {
+                bubbles: true,
+                composed: true,
+                detail: { 
+                    name: this.name,
+                    index: e.model.index
+            }});
+          this.dispatchEvent(event);
           this.shadowRoot.getElementById(`dot${e.model.index}`).checked = true;
           this._makeCurrentImageFocusable();
           this._setProperty('_hideRightIcon', this._calcRightArrowsVal(this.autoscroll, this.hideIcons));
