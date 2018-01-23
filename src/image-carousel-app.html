@@ -1,0 +1,40 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../image-carousel.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<dom-module id="image-carousel-app">
+  <template>
+    <style>
+    </style>
+    <div>
+        <image-carousel name="my-carousel">
+            <template slot="images" is="dom-repeat" items='[[images]]'>
+                <img class="scrolling-images" src="[[item]]" alt$="demo alt [[index]]" width="350px" height="350px">
+            </template>
+        </image-carousel>
+    </div>
+  </template>
+
+  <script>
+    class ImageCarouselApp extends Polymer.Element {
+      static get is() { return 'image-carousel-app'; }
+      static get properties() {
+        return {
+          images: {
+            type: Array
+            }
+          }
+      }
+
+      ready() {
+        super.ready();
+        this.addEventListener('image-carousel-selection-changed',
+            (e)=>this._onSelectionChanged(e));
+      }
+
+      _onSelectionChanged(e) {
+        console.log('selection changed', e);
+      }
+    }
+    window.customElements.define(ImageCarouselApp.is, ImageCarouselApp);
+  </script>
+</dom-module>
